@@ -1,0 +1,23 @@
+name: polyglot-persistence-lab-block-1-build
+
+services:
+  sqlserver:
+    build:
+      context: ./db/sqlserver
+      args:
+        RELEASE_VERSION: development
+        GIT_SHA: unknown
+    image: visons-db-sqlserver:local
+
+  mongodb:
+    build:
+      context: ./db/mongodb
+      args:
+        RELEASE_VERSION: development
+        GIT_SHA: unknown
+    image: visons-db-mongodb:local
+
+  checker:
+    build:
+      context: ./check
+    image: visons-checker:local

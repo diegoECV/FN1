@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: diego-centeno-configmap
+  namespace: diego-centeno-ns
+data:
+  SPRING_R2DBC_URL: "r2dbc:sqlserver://192.168.49.1:1433;database=Visons;encrypt=false"
+  SPRING_R2DBC_USERNAME: "sa"

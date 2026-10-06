@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend-deployment
+  namespace: lizeth-quispe-ns
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: backend-app
+  template:
+    metadata:
+      labels:
+        app: backend-app
+    spec:
+      containers:
+      - name: backend-container
+        image: lizeth/backend-transaccional:v2.0
+        ports:
+        - containerPort: 9090
+        envFrom:
+        - configMapRef:
+            name: lizeth-quispe-configmap
+        - secretRef:
+            name: lizeth-quispe-secret

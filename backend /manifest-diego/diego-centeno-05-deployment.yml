@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend-deployment
+  namespace: diego-centeno-ns
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: backend-app
+  template:
+    metadata:
+      labels:
+        app: backend-app
+    spec:
+      containers:
+      - name: backend-container
+        # Asegúrate de construir tu imagen y subirla a Docker Hub con este nombre
+        image: diegoecv/backend-transaccional:v2.0
+        imagePullPolicy: Never
+        ports:
+        - containerPort: 9090
+        envFrom:
+        - configMapRef:
+            name: diego-centeno-configmap
+        - secretRef:
+            name: diego-centeno-secret

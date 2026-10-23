@@ -1,98 +1,82 @@
-import { Image } from 'expo-image';
-import { Platform, StyleSheet } from 'react-native';
+import { useEffect, useState } from 'react';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { router } from 'expo-router';
+import { storage } from '../../utils/storage';
+import { api } from '../../services/api';
 
-import { HelloWave } from '@/components/hello-wave';
-import ParallaxScrollView from '@/components/parallax-scroll-view';
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { Link } from 'expo-router';
+interface Stats { clients: number; providers: number; products: number; }
 
 export default function HomeScreen() {
-  return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
-        />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({
-              ios: 'cmd + d',
-              android: 'cmd + m',
-              web: 'F12',
-            })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <Link href="/modal">
-          <Link.Trigger>
-            <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-          </Link.Trigger>
-          <Link.Preview />
-          <Link.Menu>
-            <Link.MenuAction title="Action" icon="cube" onPress={() => alert('Action pressed')} />
-            <Link.MenuAction
-              title="Share"
-              icon="square.and.arrow.up"
-              onPress={() => alert('Share pressed')}
-            />
-            <Link.Menu title="More" icon="ellipsis">
-              <Link.MenuAction
-                title="Delete"
-                icon="trash"
-                destructive
-                onPress={() => alert('Delete pressed')}
-              />
-            </Link.Menu>
-          </Link.Menu>
-        </Link>
+  const [user, setUser]   = useState<{ username: string; role: string } | null>(null);
+  const [stats, setStats] = useState<Stats>({ clients: 0, providers: 0, products: 0 });
+  const [loading, setLoading] = useState(true);
 
-        <ThemedText>
-          {`Tap the Explore tab to learn more about what's included in this starter app.`}
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          {`When you're ready, run `}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
+  useEffect(() => {
+    (async () => {
+      const u = await storage.getUser();
+      setUser(u);
+      try {
+        const [c, p, pr] = await Promise.all([
+          api.get<unknown[]>('/clients?active=true'),
+          api.get<unknown[]>('/providers?active=true'),
+          api.get<unknown[]>('/products?active=true'),
+        ]);
+        setStats({ clients: c.length, providers: p.length, products: pr.length });
+      } catch { /* vacío si sin conexión */ }
+      setLoading(false);
+    })();
+  }, []);
+
+  const handleLogout = async () => { await storage.clear(); router.replace('/login'); };
+
+  return (
+    <ScrollView style={styles.bg} contentContainerStyle={styles.content}>
+      <View style={styles.header}>
+        <View>
+          <Text style={styles.greeting}>Hola, {user?.username ?? '...'} 👋</Text>
+          <Text style={styles.role}>{user?.role}</Text>
+        </View>
+        <TouchableOpacity onPress={handleLogout} style={styles.logoutBtn}>
+          <Text style={styles.logoutTxt}>Salir</Text>
+        </TouchableOpacity>
+      </View>
+
+      <Text style={styles.section}>Maestros — resumen</Text>
+
+      {loading ? <ActivityIndicator color="#0369A1" size="large" style={{ marginTop: 32 }} /> : (
+        <View style={styles.grid}>
+          {[
+            { label: 'Clientes',    value: stats.clients,    icon: '👥', color: '#0369A1', tab: 'clients' },
+            { label: 'Proveedores', value: stats.providers,  icon: '🏭', color: '#047857', tab: 'providers' },
+            { label: 'Productos',   value: stats.products,   icon: '📦', color: '#7C3AED', tab: 'products' },
+          ].map(c => (
+            <TouchableOpacity key={c.label} style={[styles.card, { borderTopColor: c.color }]}
+              onPress={() => router.push(`/(tabs)/${c.tab}` as never)}>
+              <Text style={styles.cardIcon}>{c.icon}</Text>
+              <Text style={[styles.cardVal, { color: c.color }]}>{c.value}</Text>
+              <Text style={styles.cardLbl}>{c.label}</Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+      )}
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
-  },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
-  },
+  bg: { flex: 1, backgroundColor: '#F0F9FF' },
+  content: { padding: 20, paddingBottom: 40 },
+  header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center',
+    backgroundColor: '#fff', borderRadius: 14, padding: 16, marginBottom: 20, elevation: 3 },
+  greeting: { fontSize: 18, fontWeight: '700', color: '#0F172A' },
+  role: { fontSize: 12, color: '#64748B', marginTop: 2 },
+  logoutBtn: { backgroundColor: '#FEE2E2', borderRadius: 8, paddingHorizontal: 12, paddingVertical: 6 },
+  logoutTxt: { color: '#DC2626', fontWeight: '600', fontSize: 13 },
+  section: { fontSize: 15, fontWeight: '700', color: '#0F172A', marginBottom: 12 },
+  grid: { flexDirection: 'row', gap: 12 },
+  card: { flex: 1, backgroundColor: '#fff', borderRadius: 12, padding: 16,
+    borderTopWidth: 4, elevation: 2, alignItems: 'center' },
+  cardIcon: { fontSize: 26, marginBottom: 4 },
+  cardVal: { fontSize: 28, fontWeight: '800' },
+  cardLbl: { fontSize: 12, color: '#64748B', marginTop: 2 },
 });

@@ -1,80 +1,71 @@
-// =============================================================================
-// CONFIGURACIÓN DE ENDPOINTS Y CONECTIVIDAD — FRONTEND MÓVIL (EXPO / REACT NATIVE)
-// VISONS S.A.C. — Agroexport Management Platform
-// =============================================================================
-// Nota para emuladores y dispositivos móviles:
-// - Android Emulator (Genymotion/AVD): usa 10.0.2.2 en lugar de localhost
-// - iOS Simulator: usa localhost
-// - Dispositivo físico en red Wi-Fi: usa la IP privada de tu PC (ej: 192.168.1.X)
-// - AWS / Producción: usa la Elastic IP (EIP) con los NodePorts 30090 y 30500
-// =============================================================================
+// ============================================================
+// config.ts — Configuración central de URLs y constantes
+// Todas las URLs del backend se leen desde variables de entorno
+// (.env). Nunca pongas IPs hardcodeadas en el código.
+// ============================================================
 
-import { Platform } from 'react-native';
+// URL base del Backend 1 (Spring Boot — puerto 9090 en dev-2.0)
+export const API_URL = process.env.EXPO_PUBLIC_API_URL ?? 'http://localhost:9090/api/v1';
 
-const getLocalHost = (): string => {
-  if (Platform.OS === 'android') {
-    return '10.0.2.2';
-  }
-  return 'localhost';
-};
+// URL base del Backend 2 Analítico (Flask — puerto 5000)
+export const BA_URL = process.env.EXPO_PUBLIC_BA_URL ?? 'http://localhost:5000/api/v1';
 
-const DEFAULT_HOST = getLocalHost();
+// Timeout en ms para todas las peticiones
+export const REQUEST_TIMEOUT = Number(process.env.EXPO_PUBLIC_TIMEOUT ?? 10000);
 
-export const API_CONFIG = {
-  // Backend Transaccional (Spring Boot WebFlux - Java 25)
-  // Puerto Local: 9090 | Puerto K8s NodePort: 30090
-  CORE_BASE_URL: `http://${DEFAULT_HOST}:9090/api/v1`,
+// Endpoints del BE (Spring Boot)
+export const ENDPOINTS = {
+  // Auth
+  LOGIN:   '/auth/login',
+  LOGOUT:  '/auth/logout',
+  REGISTER: '/auth/register',
 
-  // Backend Analítico (Python 3.12 Flask)
-  // Puerto Local: 5000 | Puerto K8s NodePort: 30500
-  // Todas las rutas en Flask cuelgan de /api/v1/analytics
-  ANALYTICS_BASE_URL: `http://${DEFAULT_HOST}:5000/api/v1/analytics`,
+  // Usuarios
+  USERS:   '/users',
+  USER_BY_ID: (id: string) => `/users/${id}`,
+  USER_TOGGLE: (id: string) => `/users/${id}/toggle-status`,
+  USER_APPROVE: (id: string) => `/users/${id}/approve`,
 
-  TIMEOUT: 15000,
-};
+  // Clientes
+  CLIENTS: '/clients',
+  CLIENT_BY_ID: (id: string) => `/clients/${id}`,
 
-// Endpoints del Backend Analítico (Alineados exactamente con las rutas de Flask)
-export const BA_ENDPOINTS = {
-  // Dashboard General Consolidado
-  DASHBOARD_KPIS: '/dashboard/kpis',
+  // Proveedores
+  PROVIDERS: '/providers',
+  PROVIDER_BY_ID: (id: string) => `/providers/${id}`,
 
-  // Ventas y Facturación
-  VENTAS_RESUMEN: '/ventas/resumen',
-  VENTAS_MENSUAL: '/ventas/mensual',
+  // Productos
+  PRODUCTS: '/products',
+  PRODUCT_BY_ID: (id: string) => `/products/${id}`,
 
-  // Envíos y Despachos
-  ENVIOS_RESUMEN: '/envios/resumen',
+  // Categorías
+  CATEGORIES: '/categories',
 
-  // Calidad de Lotes
-  CALIDAD_RESUMEN: '/calidad/resumen',
-  CALIDAD_DISTRIBUCION: '/calidad/distribucion',
+  // Órdenes
+  ORDERS: '/orders',
+  ORDER_BY_ID: (id: string) => `/orders/${id}`,
 
-  // Inventario Físico
-  INVENTARIO_RESUMEN: '/inventario/resumen',
+  // Compras
+  PURCHASES: '/purchases',
 
-  // Clientes y Proveedores (MongoDB)
-  CLIENTES_RESUMEN: '/clientes/resumen',
-  PROVEEDORES_RESUMEN: '/proveedores/resumen',
+  // Inventario
+  INVENTORY: '/inventory-batches',
 
-  // Trazabilidad y Auditoría
-  TRAZABILIDAD_RESUMEN: '/trazabilidad/resumen',
-  AUDIT_RESUMEN: '/audit/resumen',
-
-  // Estudiantes / Grupo de Trabajo
-  ESTUDIANTES_RESUMEN: '/estudiantes/resumen',
+  // Embarques
+  SHIPMENTS: '/shipments',
 } as const;
 
-// Endpoints del Backend Transaccional
-export const BT_ENDPOINTS = {
-  // Autenticación
-  LOGIN: '/auth/login',
-  REGISTER: '/auth/register',
-  PROFILE: '/auth/me',
-
-  // Pedidos
-  ORDERS: '/orders',
-  ORDER_DETAILS: '/order-details',
-
-  // Auditoría
-  AUDIT_LOGS: '/audit-logs',
+// Endpoints del BA (Flask Analítico — Corregidos según API real de Flask)
+export const BA_ENDPOINTS = {
+  HEALTH:        '/health',
+  DASHBOARD:     '/analytics/dashboard/kpis',
+  SALES:         '/analytics/ventas/resumen',
+  SALES_MONTHLY: '/analytics/ventas/mensual',
+  CLIENTS:       '/analytics/clientes/resumen',
+  PROVIDERS:     '/analytics/proveedores/resumen',
+  INVENTORY:     '/analytics/inventario/resumen',
+  QUALITY:       '/analytics/calidad/resumen',
+  SHIPMENTS:     '/analytics/envios/resumen',
+  TRACEABILITY:  '/analytics/trazabilidad/resumen',
+  AUDIT:         '/analytics/audit/resumen',
 } as const;

@@ -1,5 +1,12 @@
 .env
+.env.local
 __pycache__/
 *.pyc
+*.pyo
+*.pyd
 .venv/
 venv/
+.vscode/
+.idea/
+*.log
+.pytest_cache/

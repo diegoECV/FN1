@@ -1,0 +1,43 @@
+server:
+  port: 9090
+
+spring:
+  application:
+    name: backend-transaccional
+  r2dbc:
+    url: ${SPRING_R2DBC_URL:r2dbc:mssql://127.0.0.1:1433/Visons}
+    username: ${SPRING_R2DBC_USERNAME:sa}
+    password: ${SPRING_R2DBC_PASSWORD:Password123!}
+  data:
+    mongodb:
+      uri: ${SPRING_DATA_MONGODB_URI:mongodb://admin:admin123@localhost:27017/Visons?authSource=admin}
+
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: ${GOOGLE_CLIENT_ID:}
+            client-secret: ${GOOGLE_CLIENT_SECRET:}
+            scope:
+              - email
+              - profile
+
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${MAIL_USERNAME:}
+    password: ${MAIL_PASSWORD:}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
+
+app:
+  jwt:
+    secret: ${JWT_SECRET:EsteEsUnSecretoMuyLargoParaJWT2026VisonsSAC}
+    expiration-ms: ${JWT_EXPIRATION_MS:36000000}  # 10 horas
+  frontend-url: ${FRONTEND_URL:http://localhost:5173}

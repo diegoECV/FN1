@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Cuenta Aprobada - Visons S.A.C.</title>
+</head>
+<body style="margin:0;padding:0;background-color:#0f172a;font-family:'Segoe UI',Arial,sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background-color:#0f172a;padding:40px 0;">
+    <tr>
+      <td align="center">
+        <table width="600" cellpadding="0" cellspacing="0" style="background-color:#1e293b;border-radius:16px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,0.4);">
+
+          <!-- Header -->
+          <tr>
+            <td style="background:linear-gradient(135deg,#6366f1,#8b5cf6);padding:40px;text-align:center;">
+              <h1 style="color:#ffffff;margin:0;font-size:28px;font-weight:700;letter-spacing:-0.5px;">🌿 Visons S.A.C.</h1>
+              <p style="color:rgba(255,255,255,0.8);margin:8px 0 0;font-size:14px;">Sistema de Gestión Agroexportadora</p>
+            </td>
+          </tr>
+
+          <!-- Ícono de éxito -->
+          <tr>
+            <td align="center" style="padding:40px 0 20px;">
+              <div style="width:72px;height:72px;background:linear-gradient(135deg,#10b981,#059669);border-radius:50%;display:inline-block;line-height:72px;font-size:36px;text-align:center;">✓</div>
+            </td>
+          </tr>
+
+          <!-- Contenido -->
+          <tr>
+            <td style="padding:0 48px 40px;">
+              <h2 style="color:#f1f5f9;font-size:22px;margin:0 0 16px;text-align:center;">¡Tu cuenta ha sido aprobada!</h2>
+              <p style="color:#94a3b8;font-size:15px;line-height:1.7;margin:0 0 24px;">
+                Hola <strong style="color:#e2e8f0;" th:text="${nombre}">Usuario</strong>,
+              </p>
+              <p style="color:#94a3b8;font-size:15px;line-height:1.7;margin:0 0 24px;">
+                Nos complace informarte que tu solicitud de acceso a la plataforma <strong style="color:#e2e8f0;">Visons</strong> ha sido <strong style="color:#10b981;">aprobada exitosamente</strong>.
+              </p>
+
+              <!-- Detalles de la cuenta -->
+              <div style="background:#0f172a;border-radius:12px;padding:20px;margin:0 0 28px;">
+                <table width="100%" cellpadding="0" cellspacing="0">
+                  <tr>
+                    <td style="color:#64748b;font-size:13px;padding:8px 0;border-bottom:1px solid #1e293b;">Rol asignado</td>
+                    <td style="color:#a78bfa;font-size:13px;font-weight:600;padding:8px 0;border-bottom:1px solid #1e293b;text-align:right;" th:text="${rol}">CLIENTE</td>
+                  </tr>
+                  <tr>
+                    <td style="color:#64748b;font-size:13px;padding:8px 0;">Correo de acceso</td>
+                    <td style="color:#e2e8f0;font-size:13px;padding:8px 0;text-align:right;" th:text="${email}">usuario@ejemplo.com</td>
+                  </tr>
+                </table>
+              </div>
+
+              <!-- Botón -->
+              <div style="text-align:center;margin:0 0 24px;">
+                <a th:href="${urlLogin}" href="#"
+                   style="display:inline-block;background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#ffffff;text-decoration:none;padding:14px 40px;border-radius:10px;font-size:16px;font-weight:600;letter-spacing:0.3px;">
+                  Ingresar a Visons →
+                </a>
+              </div>
+
+              <p style="color:#475569;font-size:13px;line-height:1.6;margin:0;text-align:center;">
+                Si tienes alguna pregunta, contáctanos en
+                <a href="mailto:soporte@visons.com" style="color:#6366f1;">soporte@visons.com</a>
+              </p>
+            </td>
+          </tr>
+
+          <!-- Footer -->
+          <tr>
+            <td style="background:#0f172a;padding:20px;text-align:center;border-top:1px solid #1e293b;">
+              <p style="color:#334155;font-size:12px;margin:0;">© 2026 Visons S.A.C. — Agroexportación de Calidad Mundial</p>
+            </td>
+          </tr>
+
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

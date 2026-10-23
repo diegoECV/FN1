@@ -1,0 +1,57 @@
+# MINIKUBE FUNCIONA EN CODESPACE
+# KUBECTL FUNCIONA DIRECTO EN KILLERCODA (SIN MINIKUBE)
+
+# consultar versión de minikube
+minikube version
+
+# consultar si minikube esta en start o stop
+minikube status
+
+# iniciar clúster kubernetes
+minikube start
+
+# ingresar a la carpeta de los manifiestos de kubernetes (manifest)
+cd manifest-diego
+
+# listar namespace
+kubectl get namespace
+kubectl get ns
+
+# crear un namespace "diego-centeno-04" por comando mediante un archivo: "diego-centeno-04-namespace.yml"
+kubectl apply -f diego-centeno-04-namespace.yml
+
+# consultar namespace en uso por "default" | LINUX
+kubectl config view --minify | grep namespace
+
+# consultar namespace en uso por "default" | WINDOWS
+kubectl config view --minify | findstr namespace
+
+# cambiar un namespace en uso por "default" a "diego-centeno-04"
+kubectl config set-context --current --namespace=diego-centeno-04
+
+# consultar todos los recursos de un namespace "diego-centeno-04"
+kubectl get all -n diego-centeno-04
+
+# consultar todos los recursos y secret de un namespace "diego-centeno-04"
+kubectl get all,secrets,configmaps -n diego-centeno-04
+
+# listar services del namespace "diego-centeno-04" | CODESPACE
+minikube service springboot-mongodb-service -n diego-centeno-04
+minikube service list
+
+# probar el proyecto dentro del clúster con curl | CODESPACE
+curl http://192.168.49.2:32709/api/v1/auth/login
+
+# crear un túnel de puerto la máquina local (host) y el clúster de Kubernetes | CODESPACE
+kubectl port-forward service/springboot-mongodb-service 9090:9090
+
+
+# -----------------------------------------------------------------------------------------
+# Consultar INTERNAL-IP del nodo de Kubernetes | KILLERCODA
+kubectl get nodes -o wide
+
+# probar el proyecto dentro del clúster con curl | KILLERCODA
+curl http://172.30.1.2:9090/api/v1/auth/login
+
+# crear un túnel de puerto la máquina local (host) y el clúster de Kubernetes | KILLERCODA
+kubectl port-forward service/springboot-mongodb-service 9090:9090

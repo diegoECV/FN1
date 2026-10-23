@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title th:text="${asunto}">Notificación del Sistema - Visons S.A.C.</title>
+</head>
+<body style="margin:0;padding:0;background-color:#090d16;font-family:'Segoe UI',Roboto,Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background-color:#090d16;padding:36px 0;">
+    <tr>
+      <td align="center">
+        <table width="620" cellpadding="0" cellspacing="0" style="background-color:#111827;border:1px solid #1f2937;border-radius:20px;overflow:hidden;box-shadow:0 25px 60px rgba(0,0,0,0.6);max-width:92%;">
+
+          <!-- Header con degradado Agro & Exportación -->
+          <tr>
+            <td style="background:linear-gradient(135deg,#059669,#10b981,#3b82f6);padding:36px 40px;text-align:left;">
+              <div style="display:inline-block;padding:6px 14px;background:rgba(0,0,0,0.25);border-radius:20px;backdrop-filter:blur(8px);margin-bottom:12px;">
+                <span style="color:#ffffff;font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;">🌿 Visons S.A.C. Cloud Ops</span>
+              </div>
+              <h1 style="color:#ffffff;margin:0;font-size:24px;font-weight:800;letter-spacing:-0.5px;line-height:1.2;">
+                Notificación de Actualización
+              </h1>
+              <p style="color:rgba(255,255,255,0.9);margin:6px 0 0;font-size:13px;">
+                Se ha registrado un evento operativo en el sistema agroexportador
+              </p>
+            </td>
+          </tr>
+
+          <!-- Banner de Categoría y Acción -->
+          <tr>
+            <td style="padding:28px 40px 10px;">
+              <table width="100%" cellpadding="0" cellspacing="0">
+                <tr>
+                  <td>
+                    <span style="display:inline-block;padding:4px 12px;background:#1e293b;border:1px solid #334155;border-radius:8px;color:#94a3b8;font-size:11px;font-weight:700;letter-spacing:0.8px;text-transform:uppercase;" th:text="${modulo}">
+                      MÓDULO OPERATIVO
+                    </span>
+                    <span style="display:inline-block;margin-left:8px;padding:4px 12px;background:#064e3b;border:1px solid #059669;border-radius:8px;color:#34d399;font-size:11px;font-weight:800;letter-spacing:0.8px;text-transform:uppercase;" th:text="${tipoAccion}">
+                      ACTUALIZACIÓN
+                    </span>
+                  </td>
+                  <td align="right" style="color:#64748b;font-size:12px;font-family:monospace;" th:text="${fechaHora}">
+                    2026-10-19 18:00
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- Contenido Principal -->
+          <tr>
+            <td style="padding:10px 40px 30px;">
+              <h2 style="color:#f9fafb;font-size:20px;margin:12px 0 8px;font-weight:700;" th:text="${elemento}">
+                Recurso Modificado
+              </h2>
+              <p style="color:#cbd5e1;font-size:14px;line-height:1.6;margin:0 0 20px;" th:text="${detalles}">
+                Los detalles de la operación o cambio realizado se reflejan a continuación.
+              </p>
+
+              <!-- Tabla de Atributos del Cambio -->
+              <div style="background:#0b1120;border:1px solid #1e293b;border-radius:14px;padding:18px;margin:0 0 24px;">
+                <table width="100%" cellpadding="0" cellspacing="0" style="font-size:13px;">
+                  <tr>
+                    <td style="color:#64748b;padding:8px 0;border-bottom:1px solid #1e293b;width:38%;">Módulo Afectado</td>
+                    <td style="color:#f1f5f9;font-weight:600;padding:8px 0;border-bottom:1px solid #1e293b;text-align:right;" th:text="${modulo}">Módulo</td>
+                  </tr>
+                  <tr>
+                    <td style="color:#64748b;padding:8px 0;border-bottom:1px solid #1e293b;">Tipo de Acción</td>
+                    <td style="color:#10b981;font-weight:700;padding:8px 0;border-bottom:1px solid #1e293b;text-align:right;" th:text="${tipoAccion}">Acción</td>
+                  </tr>
+                  <tr>
+                    <td style="color:#64748b;padding:8px 0;border-bottom:1px solid #1e293b;">Entidad / Código</td>
+                    <td style="color:#38bdf8;font-family:monospace;font-weight:700;padding:8px 0;border-bottom:1px solid #1e293b;text-align:right;" th:text="${elemento}">LOT-0001</td>
+                  </tr>
+                  <tr>
+                    <td style="color:#64748b;padding:8px 0;border-bottom:1px solid #1e293b;">Operador Responsable</td>
+                    <td style="color:#e2e8f0;font-weight:500;padding:8px 0;border-bottom:1px solid #1e293b;text-align:right;" th:text="${usuario}">admin@visons.com</td>
+                  </tr>
+                  <tr>
+                    <td style="color:#64748b;padding:8px 0;">Sincronización Dual</td>
+                    <td style="color:#a78bfa;font-size:12px;font-weight:600;padding:8px 0;text-align:right;">✓ SQL Server & MongoDB Activo</td>
+                  </tr>
+                </table>
+              </div>
+
+              <!-- Botón de Acción -->
+              <div style="text-align:center;margin:28px 0 16px;">
+                <a th:href="${urlAcceso}" href="http://localhost:5173"
+                   style="display:inline-block;background:linear-gradient(135deg,#10b981,#059669);color:#ffffff;text-decoration:none;padding:13px 36px;border-radius:12px;font-size:14px;font-weight:700;letter-spacing:0.3px;box-shadow:0 10px 25px rgba(16,185,129,0.35);">
+                  Abrir en Panel de Control Visons →
+                </a>
+              </div>
+
+              <p style="color:#475569;font-size:12px;line-height:1.5;margin:20px 0 0;text-align:center;">
+                Este correo fue generado automáticamente por el servicio de auditoría y notificaciones de <strong>Visons S.A.C.</strong>
+              </p>
+            </td>
+          </tr>
+
+          <!-- Footer Oficial -->
+          <tr>
+            <td style="background:#090d16;padding:24px 40px;text-align:center;border-top:1px solid #1e293b;">
+              <p style="color:#475569;font-size:11px;margin:0 0 4px;">
+                Visons S.A.C. — Agroexportación & Cadena de Frío Certificada SENASA
+              </p>
+              <p style="color:#334155;font-size:10px;margin:0;">
+                Carretera Panamericana Sur Km 298, Ica - Perú | Callao Export Logistics
+              </p>
+            </td>
+          </tr>
+
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

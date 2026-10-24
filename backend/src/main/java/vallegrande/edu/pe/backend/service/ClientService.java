@@ -3,6 +3,7 @@ package vallegrande.edu.pe.backend.service;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import vallegrande.edu.pe.backend.model.AuditLog;
 import vallegrande.edu.pe.backend.model.Client;
 import vallegrande.edu.pe.backend.repository.ClientRepository;
 
@@ -13,10 +14,12 @@ import java.util.UUID;
 @Service
 public class ClientService {
     private final ClientRepository repository;
+    private final AuditLogService auditLogService;
     private static final DateTimeFormatter ISO_FORMATTER = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
 
-    public ClientService(ClientRepository repository) {
+    public ClientService(ClientRepository repository, AuditLogService auditLogService) {
         this.repository = repository;
+        this.auditLogService = auditLogService;
     }
 
     private String currentTimestamp() {
@@ -59,7 +62,23 @@ public class ClientService {
         if (obj.getUpdatedBy() == null || obj.getUpdatedBy().isBlank()) {
             obj.setUpdatedBy("ADMIN");
         }
-        return repository.save(obj);
+        return repository.save(obj)
+                .flatMap(saved -> {
+                    AuditLog log = AuditLog.builder()
+                            .userId("U-001")
+                            .username("Admin Visons")
+                            .action("CREATE")
+                            .resource("Client")
+                            .resourceId(saved.getId())
+                            .timestamp(LocalDateTime.now())
+                            .changesBefore(null)
+                            .changesAfter("{\"companyName\":\"" + (saved.getCompanyName() != null ? saved.getCompanyName() : "") + "\",\"country\":\"" + (saved.getCountry() != null ? saved.getCountry() : "") + "\"}")
+                            .ipAddress("127.0.0.1")
+                            .build();
+                    return auditLogService.save(log)
+                            .onErrorResume(e -> Mono.empty())
+                            .thenReturn(saved);
+                });
     }
 
     public Mono<Client> update(String id, Client obj) {
@@ -77,7 +96,23 @@ public class ClientService {
                     if (obj.getUpdatedBy() == null || obj.getUpdatedBy().isBlank()) {
                         obj.setUpdatedBy("ADMIN");
                     }
-                    return repository.save(obj);
+                    return repository.save(obj)
+                            .flatMap(saved -> {
+                                AuditLog log = AuditLog.builder()
+                                        .userId("U-001")
+                                        .username("Admin Visons")
+                                        .action("UPDATE")
+                                        .resource("Client")
+                                        .resourceId(saved.getId())
+                                        .timestamp(LocalDateTime.now())
+                                        .changesBefore("{\"contactName\":\"" + (existing.getContactName() != null ? existing.getContactName() : "") + "\"}")
+                                        .changesAfter("{\"contactName\":\"" + (saved.getContactName() != null ? saved.getContactName() : "") + "\"}")
+                                        .ipAddress("127.0.0.1")
+                                        .build();
+                                return auditLogService.save(log)
+                                        .onErrorResume(e -> Mono.empty())
+                                        .thenReturn(saved);
+                            });
                 })
                 .switchIfEmpty(Mono.defer(() -> {
                     obj.setId(id);
@@ -97,7 +132,23 @@ public class ClientService {
                     c.setDeletedBy("ADMIN");
                     c.setUpdatedAt(now);
                     c.setUpdatedBy("ADMIN_DELETED");
-                    return repository.save(c);
+                    return repository.save(c)
+                            .flatMap(saved -> {
+                                AuditLog log = AuditLog.builder()
+                                        .userId("U-001")
+                                        .username("Admin Visons")
+                                        .action("DELETE")
+                                        .resource("Client")
+                                        .resourceId(saved.getId())
+                                        .timestamp(LocalDateTime.now())
+                                        .changesBefore("{\"isActive\":true}")
+                                        .changesAfter("{\"isActive\":false}")
+                                        .ipAddress("127.0.0.1")
+                                        .build();
+                                return auditLogService.save(log)
+                                        .onErrorResume(e -> Mono.empty())
+                                        .thenReturn(saved);
+                            });
                 });
     }
 
@@ -113,7 +164,23 @@ public class ClientService {
                     c.setDeletedBy(null);
                     c.setUpdatedAt(now);
                     c.setUpdatedBy("ADMIN_RESTORED");
-                    return repository.save(c);
+                    return repository.save(c)
+                            .flatMap(saved -> {
+                                AuditLog log = AuditLog.builder()
+                                        .userId("U-001")
+                                        .username("Admin Visons")
+                                        .action("RESTORE")
+                                        .resource("Client")
+                                        .resourceId(saved.getId())
+                                        .timestamp(LocalDateTime.now())
+                                        .changesBefore("{\"isActive\":false}")
+                                        .changesAfter("{\"isActive\":true}")
+                                        .ipAddress("127.0.0.1")
+                                        .build();
+                                return auditLogService.save(log)
+                                        .onErrorResume(e -> Mono.empty())
+                                        .thenReturn(saved);
+                            });
                 });
     }
 
